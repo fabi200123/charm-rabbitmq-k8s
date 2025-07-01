@@ -1411,9 +1411,13 @@ USE_LONGNAME=true
         resources_list = []
         if self._annotations_valid:
             resources_list.append(self._construct_lb())
-        logger.info(
-            f"Patching k8s loadbalancer service object {self._lb_name}"
-        )
+            logger.info(
+                f"Patching k8s loadbalancer service object {self._lb_name}"
+            )
+        else:
+            self.unit.status = BlockedStatus(
+                f"Invalid loadbalancer annotations: {self.config['loadbalancer_annotations']}"
+            )
         klm.reconcile(resources_list)
 
     def _on_remove(self, _):
